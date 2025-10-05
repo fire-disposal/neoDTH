@@ -1,0 +1,18 @@
+[project]
+name = "neodth"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiomqtt>=2.4.0",
+    "asyncpg>=0.30.0",
+    "crcmod>=1.7",
+    "fastapi>=0.118.0",
+    "httpx>=0.28.1",
+    "influxdb-client>=1.49.0",
+    "msgpack>=1.1.1",
+    "pydantic-settings>=2.11.0",
+    "pytest>=8.4.2",
+    "uvicorn>=0.37.0",
+]
