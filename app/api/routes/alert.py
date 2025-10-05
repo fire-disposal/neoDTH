@@ -4,7 +4,7 @@ from app.adapters.pg_repository.pgsql_client import PgSQLClient
 from app.adapters.pg_repository.alert_repo import HealthAlertRepository
 from app.domain.alert.models import HealthAlertRecord
 
-router = APIRouter(prefix="/alert", tags=["alert"])
+router = APIRouter()
 
 def get_repo():
     client = PgSQLClient()

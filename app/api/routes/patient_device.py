@@ -5,7 +5,7 @@ from app.services.patient_device_service import PatientDeviceService
 from app.adapters.pg_repository.pgsql_client import PgSQLClient
 from app.adapters.pg_repository.patient_device_repo import PatientDeviceRepository
 
-router = APIRouter(prefix="/patient-devices", tags=["patient-devices"])
+router = APIRouter()
 
 def get_service():
     client = PgSQLClient()

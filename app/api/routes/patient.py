@@ -8,7 +8,7 @@ from app.core.logger import get_logger
 
 logger = get_logger("patient_api")
 
-router = APIRouter(prefix="/patients", tags=["patients"])
+router = APIRouter()
 
 def get_service():
     client = PgSQLClient()
