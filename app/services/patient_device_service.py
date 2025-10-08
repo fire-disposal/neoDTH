@@ -2,7 +2,7 @@ from app.adapters.pg_repository.patient_device_repo import PatientDeviceReposito
 from app.domain.patient_device.models import PatientDevice
 from app.domain.patient_device.events import PatientDeviceBound, PatientDeviceUnbound
 from app.core.event_bus import event_bus
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 
 from app.adapters.pg_repository.device_repo import DeviceRepository
@@ -47,14 +47,14 @@ class PatientDeviceService:
             existing = await self.repo.find_active_binding(pd.patient_id, pd.device_id)
             if existing:
                 raise ValueError("该患者与设备已绑定，不能重复绑定")
-            pd.bind_time = datetime.utcnow().isoformat()
+            pd.bind_time = datetime.now(timezone.utc).isoformat()
             pd.unbind_time = None
             pd_id = await self.repo.create(pd)
             event = PatientDeviceBound(
                 id=pd_id,
                 patient_id=pd.patient_id,
                 device_id=pd.device_id,
-                bind_time=datetime.utcnow(),
+                bind_time=datetime.now(timezone.utc),
             )
             await event_bus.publish(PatientDeviceBound.__name__, event)
             self.logger.info(f"患者设备绑定成功: {pd_id}")
@@ -79,14 +79,14 @@ class PatientDeviceService:
             if pd.unbind_time:
                 self.logger.info(f"解绑幂等处理，已解绑: {pd_id}")
                 return True
-            pd.unbind_time = datetime.utcnow().isoformat()
+            pd.unbind_time = datetime.now(timezone.utc).isoformat()
             updated = await self.repo.update(pd_id, pd)
             if updated:
                 event = PatientDeviceUnbound(
                     id=pd_id,
                     patient_id=pd.patient_id,
                     device_id=pd.device_id,
-                    unbind_time=datetime.utcnow(),
+                    unbind_time=datetime.now(timezone.utc),
                 )
                 await event_bus.publish(PatientDeviceUnbound.__name__, event)
                 self.logger.info(f"解绑成功: {pd_id}")

@@ -1,4 +1,4 @@
-from app.domain.sleep.events import SleepDataReceived, SleepQualityAlert
+from app.domain.health_metrics.sleep.events import SleepDataReceived, SleepQualityAlert
 from app.adapters.influx_repository.metrics_repo import MetricsRepo
 from app.adapters.pg_repository.temperature_repo import TemperatureRepo  # 假设复用体温 repo 结构
 from app.core.event_bus import event_bus

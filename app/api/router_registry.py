@@ -1,8 +1,10 @@
+from app.api.dependencies import setup_cors
 from fastapi import FastAPI
 from app.api.routes.patient import router as patient_router
 from app.api.routes.device import router as device_router
 from app.api.routes.patient_device import router as patient_device_router
 from app.api.routes.alert import router as alert_router
+from app.api.routes.healthcheck import router as health_router
 
 def register_routers(app: FastAPI):
     """
@@ -28,3 +30,16 @@ def register_routers(app: FastAPI):
         prefix="/alerts",
         tags=["告警管理"]
     )
+    app.include_router(
+        health_router,
+        tags=["健康检查"]
+    )
+
+def setup_api(app):
+    """
+    注册 CORS 中间件并挂载所有业务路由和健康检查路由。
+    """
+    setup_cors(app)
+    register_routers(app)
+    app.include_router(health_router)
+

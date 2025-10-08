@@ -1,4 +1,4 @@
-from app.domain.heart_rate.events import HeartRateDataReceived, HeartRateHighAlert
+from app.domain.health_metrics.heart_rate.events import HeartRateDataReceived, HeartRateHighAlert
 from app.adapters.influx_repository.metrics_repo import MetricsRepo
 from app.adapters.pg_repository.heart_rate_repo import HeartRateRepo
 from app.core.event_bus import event_bus

@@ -2,7 +2,7 @@ from app.adapters.pg_repository.device_repo import DeviceRepository
 from app.domain.device.models import Device
 from app.domain.device.events import DeviceCreated, DeviceUpdated, DeviceDeleted
 from app.core.event_bus import event_bus
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 
 class DeviceService:
@@ -43,7 +43,7 @@ class DeviceService:
             manufacturer=device.manufacturer,
             model=device.model,
             note=device.note,
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
         )
         await event_bus.publish(DeviceCreated.__name__, event)
         from app.core.logger import logger
@@ -88,7 +88,7 @@ class DeviceService:
                 manufacturer=device.manufacturer,
                 model=device.model,
                 note=device.note,
-                updated_at=datetime.utcnow(),
+                updated_at=datetime.now(timezone.utc),
             )
             await event_bus.publish(DeviceUpdated.__name__, event)
             from app.core.logger import logger
@@ -111,7 +111,7 @@ class DeviceService:
         if deleted:
             event = DeviceDeleted(
                 id=device_id,
-                deleted_at=datetime.utcnow(),
+                deleted_at=datetime.now(timezone.utc),
             )
             await event_bus.publish(DeviceDeleted.__name__, event)
             logger.info(f"设备删除成功，ID={device_id}", extra={"event_type": "device_delete"})

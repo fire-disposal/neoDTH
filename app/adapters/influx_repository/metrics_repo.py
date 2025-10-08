@@ -1,6 +1,6 @@
 from app.adapters.influx_repository.influx_client import InfluxClient
-from app.domain.heart_rate.events import HeartRateDataReceived
-from app.domain.temperature.events import TemperatureDataReceived
+from app.domain.health_metrics.heart_rate.events import HeartRateDataReceived
+from app.domain.health_metrics.temperature.events import TemperatureDataReceived
 from typing import Any
 
 class MetricsRepo:

@@ -1,10 +1,15 @@
 from pydantic_settings import BaseSettings
 from pydantic import Field
+from typing import Optional
 
 class Settings(BaseSettings):
     # 基础配置
     app_name: str = "neoDTH"
     debug: bool = True
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
 
     # PostgreSQL 配置
     pg_host: str = Field("localhost", env="PG_HOST")
@@ -23,8 +28,9 @@ class Settings(BaseSettings):
     # MQTT 配置
     mqtt_host: str = Field("localhost", env="MQTT_HOST")
     mqtt_port: int = Field(1883, env="MQTT_PORT")
-    mqtt_user: str = Field("neo_mqtt", env="MQTT_USER")
-    mqtt_password: str = Field("neo_mqtt_pass", env="MQTT_PASSWORD")
+    # MQTT 用户名和密码支持无鉴权模式（可为空）
+    mqtt_user: Optional[str] = Field(None, env="MQTT_USER")
+    mqtt_password: Optional[str] = Field(None, env="MQTT_PASSWORD")
     mqtt_topic: str = Field("neo/dth/#", env="MQTT_TOPIC")
 
     # TCP 配置
@@ -38,3 +44,8 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./test.db"
 
 settings = Settings()
+from .logger import get_logger
+logger = get_logger("settings")
+logger.info("系统启动配置如下：")
+for k, v in settings.model_dump().items():
+    logger.info(f"{k}: {v}")

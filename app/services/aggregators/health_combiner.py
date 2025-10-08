@@ -1,8 +1,8 @@
 from app.core.event_bus import event_bus
 from app.core.logger import get_logger
-from app.domain.heart_rate.events import HeartRateHighAlert
-from app.domain.temperature.events import TemperatureHighAlert
-from app.domain.sleep.events import SleepQualityAlert
+from app.domain.health_metrics.heart_rate.events import HeartRateHighAlert
+from app.domain.health_metrics.temperature.events import TemperatureHighAlert
+from app.domain.health_metrics.sleep.events import SleepQualityAlert
 from typing import Dict, Any
 from datetime import datetime
 

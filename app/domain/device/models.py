@@ -14,7 +14,6 @@ class Device(DomainBaseModel):
         note: 备注
     权限控制预留: 可在此模型扩展 owner_id/tenant_id 字段用于多租户/权限控制。
     """
-    id: Optional[int] = None
     name: str
     type: Optional[str] = None
     serial_number: Optional[str] = None

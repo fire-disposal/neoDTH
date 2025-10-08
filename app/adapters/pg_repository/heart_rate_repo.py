@@ -1,5 +1,5 @@
 from app.adapters.pg_repository.pgsql_client import PgSQLClient
-from app.domain.heart_rate.events import HeartRateDataReceived
+from app.domain.health_metrics.heart_rate.events import HeartRateDataReceived
 from typing import Any
 
 class HeartRateRepo:

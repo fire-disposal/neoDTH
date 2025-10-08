@@ -1,5 +1,5 @@
 from app.adapters.pg_repository.pgsql_client import PgSQLClient
-from app.domain.temperature.events import TemperatureDataReceived
+from app.domain.health_metrics.temperature.events import TemperatureDataReceived
 from typing import Any
 
 class TemperatureRepo:

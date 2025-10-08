@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Callable, Dict, Awaitable
 from  app.core.logger import get_logger
 from  app.core.event_bus import event_bus
-from app.domain.heart_rate.events import HeartRateDataReceived
+from app.domain.health_metrics.heart_rate.events import HeartRateDataReceived
 
 logger = get_logger("mqtt_gateway.handler", event_type="mqtt")
 

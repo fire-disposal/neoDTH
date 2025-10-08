@@ -1,10 +1,13 @@
-# app/core/startup_checker.py
+from fastapi import FastAPI
+from contextlib import asynccontextmanager
+import contextlib
+
+from app.core.event_bus import event_bus
 import asyncio
 import logging
 from asyncpg import connect as pg_connect
 from influxdb_client import InfluxDBClient
 import paho.mqtt.client as mqtt
-from app.core.settings import settings
 
 logger = logging.getLogger(__name__)
 
@@ -57,3 +60,41 @@ async def verify_all_dependencies():
     if not all(results):
         raise RuntimeError("依赖服务未全部就绪，启动中止。")
     logger.info("✅ 所有依赖服务检测通过")
+from app.core.settings import settings
+from app.core.logger import logger
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("FastAPI 启动，初始化事件总线")
+    try:
+
+        await verify_all_dependencies()
+        
+        _ = settings  # 强制触发 settings 加载
+        _ = event_bus  # 强制触发 event_bus 加载
+        logger.info("注册 API 路由")
+        from app.api.router_registry import register_routers
+
+        register_routers(app)
+        logger.info("注册服务层统一初始化")
+        from app.services.bootstrap_services import init_all_services
+
+        await init_all_services()
+        # 启动 TCP Gateway 服务（事件驱动架构）
+        import asyncio
+        from app.adapters.tcp_gateway import server as tcp_server
+
+        tcp_task = asyncio.create_task(tcp_server.start_tcp_server())
+        logger.info(f"msgpack监听服务启动: {getattr(tcp_server, 'TCP_PORT', '5858')}")
+        logger.info("初始化完成，准备启动服务")
+        try:
+            yield
+        finally:
+            tcp_task.cancel()
+            with contextlib.suppress(Exception):
+                await tcp_task
+    except Exception as e:
+        logger.error(f"初始化阶段异常: {e}")
+        raise
+    finally:
+        logger.info("FastAPI 关闭，清理资源")

@@ -2,7 +2,7 @@ from app.adapters.pg_repository.patient_repo import PatientRepository
 from app.domain.patient.models import Patient
 from app.domain.patient.events import PatientCreated, PatientUpdated, PatientDeleted
 from app.core.event_bus import event_bus
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 
 from app.adapters.pg_repository.patient_repo import PatientRepository
@@ -46,7 +46,7 @@ class PatientService:
                 phone=patient.phone,
                 address=patient.address,
                 note=patient.note,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
             )
             await event_bus.publish(PatientCreated.__name__, event)
             logger.info(f"创建患者成功: {patient_id}")
@@ -96,7 +96,7 @@ class PatientService:
                     phone=patient.phone,
                     address=patient.address,
                     note=patient.note,
-                    updated_at=datetime.utcnow(),
+                    updated_at=datetime.now(timezone.utc),
                 )
                 await event_bus.publish(PatientUpdated.__name__, event)
                 logger.info(f"更新患者成功: {patient_id}")
@@ -120,7 +120,7 @@ class PatientService:
             if deleted:
                 event = PatientDeleted(
                     id=patient_id,
-                    deleted_at=datetime.utcnow(),
+                    deleted_at=datetime.now(timezone.utc),
                 )
                 await event_bus.publish(PatientDeleted.__name__, event)
                 logger.info(f"删除患者成功: {patient_id}")

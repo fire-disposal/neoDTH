@@ -1,7 +1,7 @@
 from app.domain.shared.base_model import DomainBaseModel
 from typing import Optional
 from datetime import date
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 import re
 
 class Patient(DomainBaseModel):
@@ -16,7 +16,6 @@ class Patient(DomainBaseModel):
         address: 地址，可选
         note: 备注，可选
     """
-    id: Optional[int] = Field(default=None, description="患者ID")
     name: str = Field(..., description="姓名", min_length=1)
     gender: Optional[str] = Field(default=None, description="性别")
     birth_date: Optional[date] = Field(default=None, description="出生日期")
@@ -24,13 +23,13 @@ class Patient(DomainBaseModel):
     address: Optional[str] = Field(default=None, description="地址")
     note: Optional[str] = Field(default=None, description="备注")
 
-    @validator("name")
+    @field_validator("name")
     def name_must_not_be_empty(cls, v):
         if not v or not v.strip():
             raise ValueError("姓名不能为空")
         return v
 
-    @validator("phone")
+    @field_validator("phone")
     def phone_format_check(cls, v):
         if v is None or v == "":
             return v

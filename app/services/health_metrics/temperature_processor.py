@@ -1,4 +1,4 @@
-from app.domain.temperature.events import TemperatureDataReceived, TemperatureHighAlert
+from app.domain.health_metrics.temperature.events import TemperatureDataReceived, TemperatureHighAlert
 from app.adapters.influx_repository.metrics_repo import MetricsRepo
 from app.adapters.pg_repository.temperature_repo import TemperatureRepo
 from app.core.event_bus import event_bus
